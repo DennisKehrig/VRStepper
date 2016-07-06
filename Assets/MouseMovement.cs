@@ -7,11 +7,13 @@ public class MouseMovement : MonoBehaviour {
     
     float y, minY, maxY, centerY;
     float lastMinChange, lastMaxChange;
+    double distanceMoved;
 
     // Use this for initialization
     void Start () {
         centerY = transform.position.y;
         y = 0;
+        distanceMoved = 0;
         minY = 0;
         maxY = 0;
         lastMinChange = Time.time;
@@ -24,23 +26,25 @@ public class MouseMovement : MonoBehaviour {
         if (relY == 0)
             return;
         y += relY;
+        distanceMoved += Mathf.Abs(relY);
+        float buffer = (float)(distanceMoved * 0.01d);
 
-        if (y < minY) {
-            minY = y;
-            lastMinChange = Time.time;
-            if ((Time.time - lastMaxChange) > minStableTable)
-                maxY -= (minY - y);
+        float effectiveMinY = minY + buffer;
+        float effectiveMaxY = maxY - buffer;
+
+        if (y < effectiveMinY) {
+            minY = effectiveMinY = y;
+            maxY = effectiveMaxY;
+            distanceMoved = 0;
         }
-        else if (y > maxY) {
-            maxY = y;
-            lastMaxChange = Time.time;
-            if ((Time.time - lastMinChange) > minStableTable)
-                minY -= (maxY - y);
+        else if (y > effectiveMaxY) {
+            maxY = effectiveMaxY = y;
+            minY = effectiveMinY;
+            distanceMoved = 0;
         }
 
-        float distance = maxY - minY;
-        float progress = (distance == 0) ? 0.5f : ((y - minY) / distance);
-        Debug.Log("Distance: " + distance + ", progress: " + progress + ", min | cur | max --- " + minY + " | " + y + " | " + maxY);
+        float range = effectiveMaxY - effectiveMinY;
+        float progress = (range == 0) ? 0.5f : ((y - effectiveMinY) / range);
 
         transform.position = new Vector3(transform.position.x, centerY + (progress - 0.5f), transform.position.z);
     }
