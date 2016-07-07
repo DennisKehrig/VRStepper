@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MouseMovement : MonoBehaviour {
+public class ApplyProgressToX : MonoBehaviour
+{
     public GameObject managers;
 
     MouseBasedProgressManager progressManager;
-    float centerY;
+    float centerX;
 
     // Use this for initialization
     void Start() {
-        Debug.Log("Managers: " + managers);
         progressManager = managers.GetComponent<MouseBasedProgressManager>();
-        Debug.Log("Progress manager: " + progressManager);
-        centerY = transform.position.y;
+        centerX = transform.position.x;
     }
 
     // Update is called once per frame
     void Update() {
-        transform.position = new Vector3(transform.position.x, centerY + (progressManager.Progress - 0.5f), transform.position.z);
+        float x = centerX + (progressManager.Progress - 0.5f);
+        transform.position = new Vector3(x, transform.position.y, transform.position.z);
     }
 }
