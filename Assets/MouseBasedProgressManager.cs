@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class MouseBasedProgressManager : MonoBehaviour {
+    const float initialProgress = 0.5f;
     float y, minY, maxY;
 
     public float Progress { get; private set; }
@@ -12,7 +13,7 @@ public class MouseBasedProgressManager : MonoBehaviour {
         y = 0;
         minY = 0;
         maxY = 0;
-        Progress = 0.5f;
+        Progress = initialProgress;
         ProgressChange = 0.0f;
     }
 
@@ -24,18 +25,19 @@ public class MouseBasedProgressManager : MonoBehaviour {
             return;
         }
 
-        y += relY;
-        float buffer = Mathf.Abs(relY) * 0.015f;
+        float diffY = Mathf.Abs(relY);
+        float buffer = diffY * 0.015f;
         minY += buffer;
         maxY -= buffer;
 
+        y += relY;
         if (y < minY)
             minY = y;
         else if (y > maxY)
             maxY = y;
 
         float range = maxY - minY;
-        float progress = (range == 0) ? 0.5f : ((y - minY) / range);
+        float progress = (range == 0) ? initialProgress : ((y - minY) / range);
         ProgressChange = progress - Progress;
         Progress = progress;
     }
