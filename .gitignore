@@ -31,3 +31,5 @@ sysinfo.txt
 *.unitypackage
 Build.exe
 *.pdb
+Assets/SteamVR/Scenes*
+Assets/SteamVR/Extras*
